@@ -1,0 +1,22 @@
+Explanation of Flow Control and Jumbo Frames (Cisco Support Email)
+Sender: Olger Hernandez, LAN Switching Tech Lead, Cisco TAC
+Recipient: Joel Hammond
+Topic: Technical clarification on Flow Control and Jumbo Frames features on Cisco switches
+
+🧾 Key Points:
+Flow Control:
+
+A method for managing packet transmission rates between devices.
+
+If a receiving device (e.g., switch A) becomes overwhelmed, it sends a pause frame to the sender (e.g., switch B) to slow down traffic.
+
+Jumbo Frames:
+
+Allows transmission of Ethernet frames larger than the standard 1500 bytes (e.g., up to 9000 bytes).
+
+Beneficial for large file transfers between systems, as fewer packets are needed.
+
+Compatibility:
+
+While Cisco documentation does not explicitly confirm compatibility, both Flow Control and Jumbo Frames can function together.
+
