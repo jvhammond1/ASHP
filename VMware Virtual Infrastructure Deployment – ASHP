@@ -1,0 +1,45 @@
+# VMware Virtual Infrastructure Deployment – ASHP
+
+This project documents the design and implementation of an enterprise-grade VMware Virtual Infrastructure for the American Society of Health-System Pharmacists (ASHP). The deployment included the full setup of VMware VirtualCenter Server, VI Client, ESX hosts, and License Server in a secure and firewall-controlled enterprise environment.
+
+## 🧑‍💼 Role & Responsibilities
+
+**Role**: VMware Infrastructure Engineer  
+**Client**: American Society of Health-System Pharmacists (ASHP)  
+**Scope**: Design, implement, document, and maintain VMware-based virtualization infrastructure.
+
+## 🛠️ Key Responsibilities
+
+- Designed and implemented VMware VirtualCenter Server with a custom SQL database backend and internal DNS configuration.
+- Installed and configured the VI Client, License Server, and ESX Hosts for centralized VM management.
+- Managed firewall configurations and ensured secure port communication between VirtualCenter, ESX hosts, and clients (Ports: 80, 443, 902, 27000, 27010).
+- Implemented high-availability capabilities (vMotion, cloning, heartbeat monitoring) across VirtualCenter-managed hosts.
+- Authored detailed step-by-step internal documentation on setup, upgrades, port configurations, and license management.
+- Collaborated with cross-functional teams to align with enterprise compliance and network policies.
+
+## 📄 Documentation
+
+All implementation details, port settings, and configuration steps are available in `/docs/virtualcenter-installation.md`.
+
+## 🧩 Technologies Used
+
+- VMware VirtualCenter Server
+- VI Client
+- ESX Hosts
+- Microsoft SQL Server
+- Microsoft .NET Framework 1.1
+- Windows Server
+- DNS, ODBC, and Enterprise Firewall Systems
+
+## 🔐 Security & Compliance
+
+- Static IP assignment and DNS validation
+- License key management and port hardening
+- Compliance with enterprise firewall and authentication protocols
+
+## 🚀 Outcomes
+
+- Deployed a fully operational Virtual Infrastructure supporting multiple managed ESX hosts
+- Enabled live VM migration, centralized management, and streamlined provisioning
+- Delivered full internal documentation to support scaling and future maintenance
+
