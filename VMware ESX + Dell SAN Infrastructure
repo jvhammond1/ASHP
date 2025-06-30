@@ -1,0 +1,119 @@
+\# ASHP VMware ESX + Dell SAN Infrastructure
+
+
+
+This repository documents the architecture and configuration of the enterprise storage and virtualization solution implemented for the American Society of Health-System Pharmacists (ASHP). The system integrates VMware ESX servers with Dell PowerEdge servers and Dell MD-series storage arrays (MD3000, MD1000) via SAS and iSCSI networks.
+
+
+
+\## 🧑‍💼 Role
+
+
+
+\*\*Infrastructure Engineer\*\*  
+
+Designed and deployed a highly available, tiered storage environment supporting VMware ESX virtualization, built on Dell PowerEdge hardware and Dell SANmelody-based arrays.
+
+
+
+\## 📐 Architecture Overview
+
+
+
+\- \*\*Virtualization Platform\*\*: VMware ESX (Dell PowerEdge 6850)
+
+\- \*\*Storage Arrays\*\*: Dell MD3000 (head) and MD1000 (expansion shelves)
+
+\- \*\*Servers\*\*: Dell 2950 (Storage Tier Controller), Dell PowerEdge 6850 (VM Host)
+
+\- \*\*Network Interfaces\*\*:
+
+&nbsp; - DRAC for out-of-band management
+
+&nbsp; - Quad-port NIC (top 2 for iSCSI, bottom 2 reserved)
+
+&nbsp; - Dual-port NIC (top = DMZ, bottom = Data)
+
+&nbsp; - Dedicated NICs for VMotion and Service Console
+
+\- \*\*Storage Connectivity\*\*:
+
+&nbsp; - Dual SAS Controllers connecting MD3000 to MD1000 expansion shelves
+
+&nbsp; - Redundant paths (A \& B) for high availability
+
+\- \*\*Management\*\*: Single port NIC for RDP; DRAC for iDRAC access
+
+
+
+\## 🔌 Connection Map
+
+
+
+The system uses redundant SAS links between storage arrays and servers to ensure data path availability and failover protection.
+
+
+
+\- MD3000 ↔ MD1000-A1 → MD1000-A2 (Path A)
+
+\- MD3000 ↔ MD1000-B1 → MD1000-B2 (Path B)
+
+
+
+Each path is driven by independent SAS controllers on the storage server for fault tolerance.
+
+
+
+\## 🛠️ Technologies Used
+
+
+
+\- VMware ESX Server
+
+\- Dell PowerEdge 6850 \& 2950
+
+\- Dell MD3000, MD1000 SAN arrays
+
+\- Dell DRAC
+
+\- iSCSI \& SAS storage networking
+
+\- SANmelody (DataCore-based storage virtualization)
+
+
+
+\## 🗂️ Documentation
+
+
+
+Included:
+
+\- `/Visio-ESX and SANmelody.pdf`: Hardware topology and network diagrams (Front View, Rear View, Logical View)
+
+
+
+\## 🔐 Key Considerations
+
+
+
+\- Multi-path storage access using SAS for high availability
+
+\- Segmented NICs for VM traffic, DMZ, iSCSI, and management
+
+\- DRAC used for secure remote management
+
+\- iSCSI NICs isolated on separate VLANs for performance and security
+
+\- VMware VMotion network separated for seamless live migration
+
+
+
+\## 📈 Outcomes
+
+
+
+\- Enabled reliable, high-performance storage for VMware VMs
+
+\- Achieved redundancy at both the network and storage layer
+
+\- Designed a scalable storage backend capable of future expansion
