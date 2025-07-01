@@ -1,0 +1,72 @@
+# 🔐 VMware Infrastructure 3.0.1 - Permissions Configuration
+
+This document outlines the user roles and permissions configured within **VMware Infrastructure 3.0.1 (VI 3.0.1)**, primarily within the VMware VirtualCenter 2.0 environment.
+
+---
+
+## 📋 Overview
+
+Permissions in VMware VI 3.0.1 are role-based and applied at various levels of the vSphere inventory (e.g., datacenter, host, VM, resource pool). Each permission consists of:
+
+- **User/Group** (from Windows Active Directory or local system)
+- **Assigned Role** (set of privileges)
+- **Inventory Object Scope** (where the permission applies)
+
+---
+
+## 👥 Role Assignments (Based on Screenshot)
+
+| **User/Group**             | **Assigned Role**   | **Scope**             |
+|----------------------------|---------------------|------------------------|
+| `ASHPLN2\JoelH`            | Administrator        | Root (`/`)            |
+| `ASHPLN2\Domain Admins`    | Administrator        | Root (`/`)            |
+| `ASHPLN2\CitrixAdmins`     | Virtual Machine User | Cluster or Folder     |
+| `ASHPLN2\BackupOps`        | Read-Only            | Resource Pool / Hosts |
+| `ASHPLN2\Helpdesk`         | Virtual Machine Power User | VMs Only      |
+
+> ✅ Note: Users like `JoelH` and `Domain Admins` have **full rights** across the entire infrastructure.
+
+---
+
+## 🧩 Common Role Definitions
+
+| **Role**                    | **Key Privileges**                                                                      |
+|-----------------------------|------------------------------------------------------------------------------------------|
+| Administrator               | Full control over all objects and settings                                               |
+| Virtual Machine Power User  | Create, modify, snapshot, and power control on assigned VMs                             |
+| Virtual Machine User        | Power on/off, console access, guest interaction                                         |
+| Read-Only                   | View-only access across all inventory; no modification rights                           |
+| Custom Roles                | You can create tailored roles with specific combinations of privileges if needed        |
+
+---
+
+## 📁 Permission Structure Reference
+
+Permissions can be set at the following levels:
+
+- Datacenter level
+- Cluster level
+- ESX host level
+- Virtual Machine level
+- Resource pool or folder level
+
+> 🚨 **Important**: Permissions do **not inherit downward** unless explicitly configured. Always verify object-specific permissions in VI Client.
+
+---
+
+## 🛠️ How to Modify Permissions
+
+1. Open VMware Infrastructure Client
+2. Navigate to the object (e.g., host, VM, folder)
+3. Right-click > **Permissions**
+4. Click **Add Permission**
+5. Select user/group → assign role → check propagation if needed
+6. Click **OK**
+
+---
+
+## 🔄 Backup & Recovery Recommendations
+
+- Export permission configurations (manual notes or screenshots)
+- Backup your VirtualCenter database regularly
+- Keep a list of critical admin accounts outside of vCenter for DR purposes
