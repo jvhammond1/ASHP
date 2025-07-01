@@ -1,0 +1,13 @@
+VMWare ESX Server PORTS
+If you have a firewall between two ESX Server hosts and you want to allow transactions
+between the hosts or use VirtualCenter to perform any source/target activities, such as
+VMware High Availability (HA) traffic, migration, cloning, or VMotion, you must
+configure a connection through which the managed hosts can receive data. To do so,
+you open ports in the following ranges:
+- 902 (server-to-server migration and provisioning traffic)
+- 2050–5000 (for HA traffic)
+- 8000 (for VMotion)
+- 8042–8045 (for HA traffic)
+Refer to the firewall system administrator for additional information on configuring the
+ports. For more detailed information on the directionality and protocol for these ports,
+see “TCP and UDP Ports for Management Access” on page 187.
