@@ -1,0 +1,94 @@
+# 🌐 VMware NIC and vSwitch Configuration - ASHP
+
+This `README.md` provides a structured summary of the NIC assignments, vSwitch settings, VLANs, and port group configurations in the VMware ESXi environment for ASHP. This documentation is intended to support disaster recovery (DR), troubleshooting, and standardized configuration across ESXi hosts.
+
+---
+
+## 🧱 Overview
+
+Each ESXi host is configured with multiple vmnics (physical NICs) mapped to virtual switches (vSwitches). These are used for management, vMotion, iSCSI, and production network traffic.
+
+---
+
+## ⚙️ vSwitch Configuration
+
+### **vSwitch0**
+- **Purpose**: Management & VM Network
+- **Uplink**: `vmnic0`
+- **Port Groups**:
+  - `Management Network` - VLAN: (untagged or VLAN 0)
+  - `VM Network` - VLAN: 10
+
+### **vSwitch1**
+- **Purpose**: vMotion
+- **Uplink**: `vmnic1`
+- **Port Groups**:
+  - `vMotion` - VLAN: 20
+
+### **vSwitch2**
+- **Purpose**: iSCSI Storage
+- **Uplink**: `vmnic2`, `vmnic3`
+- **Port Groups**:
+  - `iSCSI-A` - VLAN: 30
+  - `iSCSI-B` - VLAN: 31
+- **NIC Teaming Policy**: Active/Active or Active/Standby depending on storage pathing policy.
+
+---
+
+## 🧩 NIC-to-Switch Mapping Summary
+
+| **vmnic** | **Assigned vSwitch** | **Use Case**     | **VLAN ID** | **Status** |
+|-----------|----------------------|------------------|-------------|------------|
+| vmnic0    | vSwitch0             | Management       | None/0      | ✅ Connected |
+| vmnic1    | vSwitch1             | vMotion          | 20          | ✅ Connected |
+| vmnic2    | vSwitch2             | iSCSI-A          | 30          | ✅ Connected |
+| vmnic3    | vSwitch2             | iSCSI-B          | 31          | ✅ Connected |
+| vmnic4    | (optional)           | VM Network (high traffic) | 10 | ⚠️ Check if used |
+
+> ✅ **Tip**: Always verify vmnic link status and speed in the ESXi Host Client under **Networking > Physical NICs**.
+
+---
+
+## 🔒 Security & Teaming Policy Notes
+
+- **Security Settings** (per Port Group):
+  - Promiscuous Mode: **Reject**
+  - MAC Address Changes: **Reject**
+  - Forged Transmits: **Reject**
+
+- **NIC Teaming**:
+  - iSCSI paths may require one active NIC per VMkernel for multipathing.
+  - Management and vMotion should have failover NICs configured with appropriate **Failover Order**.
+
+---
+
+## 📌 VLAN and Port Group Reference
+
+| **Port Group**     | **vSwitch** | **VLAN ID** | **Use**               |
+|--------------------|-------------|-------------|------------------------|
+| Management Network | vSwitch0    | 0           | Host management        |
+| VM Network         | vSwitch0    | 10          | Production VMs         |
+| vMotion            | vSwitch1    | 20          | vMotion traffic        |
+| iSCSI-A            | vSwitch2    | 30          | Storage path A         |
+| iSCSI-B            | vSwitch2    | 31          | Storage path B         |
+
+---
+
+## 🔧 Configuration Tips
+
+- Use **consistent naming** across all hosts for port groups to simplify vMotion and DRS.
+- Confirm **MTU size** on iSCSI networks if Jumbo Frames are enabled (e.g., set to **9000**).
+- Use **VMkernel NICs** (`vmk`) properly:
+  - `vmk0`: Management
+  - `vmk1`: vMotion
+  - `vmk2`: iSCSI-A
+  - `vmk3`: iSCSI-B
+
+---
+
+## 📚 References
+
+- [VMware ESXi Networking Guide](https://docs.vmware.com/en/VMware-vSphere/index.html)
+- [vSphere Best Practices for iSCSI Networking](https://kb.vmware.com/s/article/2038869)
+- [vMotion Requirements](https://kb.vmware.com/s/article/2058378)
+
