@@ -1,0 +1,56 @@
+# 🛠️ ASHP Business Continuity - Disaster Recovery (DR) README.md
+
+This document provides configuration references, considerations, and procedural notes for maintaining business continuity at ASHP during DR events or system rebuilds.
+
+---
+
+## 🔧 System Configuration & Hardware
+
+### **Server2**
+- DR site hardware: **Single drive**
+- ASHP production: **Three separate drives**
+- IP: `172.16.1.X` (needs clarification)
+
+### **VMware Hosts**
+
+#### **vhost2**
+| Function     | IP Address     |
+|--------------|----------------|
+| vMotion      | 10.30.1.12     |
+| iSCSI 1      | 10.34.1.2      |
+| iSCSI 2      | 10.34.1.3      |
+| Web Server   | 172.16.10.59   |
+| Unassigned?  | 172.16.10.64   |
+
+#### **vhost3**
+| Function     | IP Address     |
+|--------------|----------------|
+| vMotion      | 10.30.1.13     |
+| iSCSI 1      | 10.34.1.4      |
+| iSCSI 2      | 10.34.1.5      |
+| Web Server   | 172.16.10.66   |
+| Unassigned?  | 172.16.10.60   |
+
+> 🔍 **Note**: IP address assignments were unclear in IST documentation. Ensure future asset maps clearly associate IPs with their functional roles.
+
+---
+
+## 📦 Software Considerations
+
+### **GoVault Software**
+- Clarify which version and components should be installed in DR environment.
+
+### **VMware ESX**
+- Maintain up-to-date **kickstart config files**.
+- Store additional automation scripts and boot-time configs to accelerate host provisioning.
+
+### **Citrix License Server**
+- **Do not install** on the same system as **VMware Virtual Center**, due to Apache conflicts.
+  - VC uses Apache → conflict with Citrix License server’s own Apache/IIS requirement.
+  - Results in error despite installation suggesting IIS is acceptable.
+- **Recommended Fix**: Rerun **Windows Server SP2** to repair mismatched IIS files.  
+  See [MS KB919090](http://support.microsoft.com/kb/919090).
+
+---
+
+## 🔑 Licensing &
