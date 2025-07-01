@@ -1,0 +1,81 @@
+VMware vSphere 4.0 iSCSI & VMkernel Network Configuration
+markdown
+Copy
+Edit
+# VMware vSphere 4.0 iSCSI & VMkernel Network Configuration
+
+This document outlines the steps taken to configure iSCSI networking with Jumbo Frames, VMkernel NICs, and proper vSwitch and port group setup on a VMware vSphere 4.0 host (`vdevhost0a`).
+
+---
+
+## 🔧 Configuration Steps
+
+### 1. Set MTU to 9000 on vSwitch5
+```bash
+vicfg-vswitch.pl --server vdevhost0a -m 9000 vSwitch5
+2. Create Port Groups for iSCSI
+bash
+Copy
+Edit
+vicfg-vswitch.pl --server vdevhost0a -add-pg iSCSI1 vSwitch5
+vicfg-vswitch.pl --server vdevhost0a -add-pg iSCSI2 vSwitch5
+3. Create VMkernel NICs with Jumbo Frames
+bash
+Copy
+Edit
+vicfg-vmknic.pl --server vdevhost0a --username root -add -ip 10.34.1.2 -netmask 255.255.255.0 -p iSCSI1 -mtu 9000
+vicfg-vmknic.pl --server vdevhost0a --username root -add -ip 10.34.1.3 -netmask 255.255.255.0 -p iSCSI2 -mtu 9000
+4. Bind VMkernel NICs to iSCSI Adapter
+bash
+Copy
+Edit
+esxcli.exe --server vdevhost0a swiscsi nic add -n vmk2 -d vmhba34
+esxcli.exe --server vdevhost0a swiscsi nic add -n vmk3 -d vmhba34
+🌐 Network Summary
+VMkernel NIC	Port Group	IP Address	MTU	Purpose
+vmk0	Management	172.16.10.180	1500	Management
+vmk1	VMOTION	10.30.1.12	1500	vMotion
+vmk2	iSCSI1	10.34.1.2	9000	iSCSI Path 1
+vmk3	iSCSI2	10.34.1.3	9000	iSCSI Path 2
+
+🔌 vSwitch Summary
+vSwitch	MTU	Uplinks	Port Groups
+vSwitch0	1500	vmnic6, vmnic7	Management Network
+vSwitch1	1500	vmnic9, vmnic0	DATA
+vSwitch2	1500	vmnic4, vmnic2	DMZ
+vSwitch3	1500	—	Internalnet
+vSwitch4	1500	vmnic8, vmnic1	VMOTION
+vSwitch5	9000	vmnic5, vmnic3	iSCSI1, iSCSI2
+
+✅ Notes
+Jumbo Frames enabled on vSwitch5 and iSCSI VMkernel NICs.
+
+Dual-path iSCSI configuration using vmk2 and vmk3.
+
+iSCSI NICs bound to adapter vmhba34.
+
+vmk1 is the only NIC enabled for vMotion.
+
++----------------------+
+
+vSwitch5 (MTU 9000)
+iSCSI1 → vmk2 (10.34.1.2)
+iSCSI2 → vmk3 (10.34.1.3)
+Uplinks: vmnic5, vmnic3
++----------------------+
+
++----------------------+
+
+vSwitch4
+VMOTION → vmk1
+IP: 10.30.1.12
+Uplinks: vmnic8, vmnic1
++----------------------+
+
++----------------------+
+
+vSwitch0
+Management → vmk0
+IP: 172.16.10.180
+Uplinks: vmnic6, vmnic7
++----------------------+
