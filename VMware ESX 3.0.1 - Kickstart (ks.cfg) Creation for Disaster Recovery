@@ -1,0 +1,171 @@
+# 🛠️ VMware ESX 3.0.1 - Kickstart (ks.cfg) Creation for Disaster Recovery
+
+This document outlines how to create a `ks.cfg` (Kickstart) file from an existing VMware ESX Server 3.0.1 installation to use in recovering systems during disaster recovery (DR).
+
+---
+
+## 📌 Purpose
+
+The Kickstart file allows administrators to automate the reinstallation or recovery of ESX Server systems. This is especially critical in disaster recovery scenarios where minimizing manual configuration is key.
+
+---
+
+## ✅ Enabling Scripted Installation Support
+
+Before using VI Web Access to generate a Kickstart file, you must enable the scripted installation feature:
+
+### Steps:
+
+1. SSH into the ESX Server 3.0.1 service console as `root`.
+
+2. Open the following configuration file in a text editor:
+   ```bash
+   vi /usr/lib/vmware/webAccess/tomcat/apache-tomcat-5.5.17/webapps/ui/WEB-INF/struts-config.xml
+Locate and comment out this section:
+
+xml
+Copy
+Edit
+<action path="/scriptedInstall"
+  type="org.apache.struts.actions.ForwardAction"
+  parameter="/WEB-INF/jsp/scriptedInstall/disabled.jsp" />
+Uncomment the following <action> block:
+
+xml
+Copy
+Edit
+<!--
+<action path="/scriptedInstall"
+  type="com.vmware.webcenter.scripted.ProcessAction">
+  <forward name="scriptedInstall.form1" path="/WEB-INF/jsp/scriptedInstall/form1.jsp" />
+  <forward name="scriptedInstall.form2" path="/WEB-INF/jsp/scriptedInstall/form2.jsp" />
+  <forward name="scriptedInstall.form3" path="/WEB-INF/jsp/scriptedInstall/form3.jsp" />
+  <forward name="scriptedInstall.form4" path="/WEB-INF/jsp/scriptedInstall/form4.jsp" />
+  <forward name="scriptedInstall.form5" path="/WEB-INF/jsp/scriptedInstall/form5.jsp" />
+  <forward name="scriptedInstall.form6" path="/WEB-INF/jsp/scriptedInstall/form6.jsp" />
+  <forward name="scriptedInstall.form7" path="/WEB-INF/jsp/scriptedInstall/form7.jsp" />
+</action>
+-->
+Save and exit the editor.
+
+Restart VMware Web Access:
+
+bash
+Copy
+Edit
+service vmware-webAccess restart
+🧾 Creating a Kickstart Script via VI Web Access
+After enabling scripted install, follow these steps to generate a kickstart file using the graphical interface:
+
+Step-by-Step Instructions
+Launch a supported browser and go to your ESX Server's Web Access URL.
+
+Log in and select Scripted Installer.
+
+Installation Configuration:
+
+Select Initial Installation or Upgrade.
+
+Choose installation method:
+
+Remote (HTTP/FTP/NFS server)
+
+CD-ROM
+
+Provide the appropriate URL or mount path for remote sources.
+
+Network Method:
+
+Choose DHCP or Static IP.
+
+If using static IP, enter:
+
+Hostname
+
+IP Address
+
+Netmask
+
+Gateway
+
+DNS Server(s)
+
+VLAN ID (if applicable)
+
+VM Network Settings:
+
+Choose whether to create default VM networks automatically.
+
+System Configuration:
+
+Time Zone
+
+Reboot after install (Yes recommended)
+
+Root password (entered twice)
+
+License Agreement:
+
+Accept EULA to proceed.
+
+Disk Partitioning:
+
+Define partitions for /boot, /, and swap at minimum.
+
+Choose file system types: ext3, swap, vmfs, etc.
+
+Use /dev/hda for IDE disks.
+
+Use Grow only for non-critical partitions.
+
+Licensing Options:
+
+Post Install – configure after installation.
+
+Server Based – use a central license server.
+
+File Based – use a local license file.
+
+If Server Based:
+
+Provide license server IP and port.
+
+Select license type (Starter or Standard).
+
+If File Based:
+
+Upload license file from disk.
+
+Final Step:
+
+Click Download Kickstart File to save ks.cfg.
+
+💾 Storage & Deployment
+Save the generated ks.cfg file to a:
+
+Floppy disk (legacy deployments)
+
+Network-accessible location (HTTP, FTP, NFS)
+
+Ensure ESX install media is available via:
+
+CD-ROM
+
+Network (HTTP/FTP/NFS)
+
+🔄 Deployment Strategy for DR
+Use one universal Kickstart file with DHCP, then reconfigure IPs post-install.
+
+For critical infrastructure, create individual ks.cfg files per host with unique static IP and hostname.
+
+Store copies in your DR documentation and back them up offsite.
+
+🧪 Testing & Maintenance
+Periodically test the scripted install process on spare hardware or lab environments.
+
+Update ks.cfg files if partition layouts or licensing models change.
+
+📚 Reference
+VMware Infrastructure 3 Installation Guide
+
+VMware KB: Scripted Installations Using Kickstart
