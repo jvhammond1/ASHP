@@ -1,0 +1,52 @@
+# ⚙️ VMware ESX 3.0.1 - System Resource Allocation
+
+This document outlines the CPU and memory resource allocation configuration for virtual machines on a VMware ESX 3.0.1 host. These settings help ensure optimal performance and control over shared host resources.
+
+---
+
+## 📊 Resource Allocation Parameters
+
+Each virtual machine (VM) on the host is assigned resource settings for CPU and memory using the following parameters:
+
+| **VM Name**     | **CPU Reservation** | **CPU Limit** | **CPU Shares** | **Memory Reservation** | **Memory Limit** | **Memory Shares** |
+|------------------|----------------------|----------------|----------------|--------------------------|-------------------|--------------------|
+| ExampleVM01      | 0 MHz                | Unlimited      | Normal         | 0 MB                    | Unlimited         | Normal             |
+| ExampleVM02      | 500 MHz              | 1000 MHz       | High           | 256 MB                  | 1024 MB           | High               |
+| ExampleVM03      | 0 MHz                | 800 MHz        | Low            | 128 MB                  | 512 MB            | Low                |
+
+> ⚠️ This example assumes settings similar to what’s visible in your uploaded image. Replace with your actual values if needed.
+
+---
+
+## 🔍 Parameter Definitions
+
+- **Reservation**: Minimum guaranteed resources. Reserved resources are always available to the VM.
+- **Limit**: Maximum resources the VM can use, regardless of availability.
+- **Shares**: Used during contention to determine relative priority between VMs. Can be Low, Normal, or High.
+
+---
+
+## 🎯 Use Cases
+
+- **High Reservation**: Critical workloads like database servers.
+- **Unlimited Limit**: For flexibility when resources are available.
+- **High Shares**: For ensuring preferred resource access during contention.
+
+---
+
+## 🛠️ How to Configure
+
+1. Open **VMware Infrastructure Client**
+2. Select your host and go to **Resource Allocation**
+3. Right-click a VM > **Edit Settings**
+4. Go to **Resources** tab
+5. Adjust **Reservation**, **Limit**, and **Shares** for CPU and Memory
+6. Click **OK**
+
+---
+
+## 🧩 Tips & Best Practices
+
+- Avoid unnecessary reservations — they reduce scheduler flexibility.
+- Use **Resource Pools** for group-level resource control.
+- Monitor **real usage** to fine-tune limits and avoid overcommitting memory.
