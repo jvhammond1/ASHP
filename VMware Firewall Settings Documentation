@@ -1,0 +1,56 @@
+# 🔥 VMware Firewall Settings Documentation
+
+This README provides an overview of required firewall configurations and rules for VMware environments. These settings are essential for ensuring proper communication between ESXi hosts, vCenter, storage, backup systems, and other infrastructure components.
+
+---
+
+## 🛠️ Purpose
+
+Proper VMware firewall configuration ensures:
+
+- Seamless vMotion and management connectivity
+- iSCSI/NFS storage access
+- vSphere Client access
+- Backup integration
+- Time synchronization
+- Licensing and directory services communication
+
+---
+
+## 📋 Common VMware Firewall Ports
+
+| **Service**              | **Port/Protocol**       | **Direction**         | **Purpose**                              |
+|--------------------------|--------------------------|------------------------|-------------------------------------------|
+| ESXi Host Management     | 443 / TCP                | Inbound                | vSphere Web Client, Host client           |
+| SSH                      | 22 / TCP                 | Inbound (Optional)     | Remote CLI access                         |
+| vMotion                  | 8000 / TCP               | Bidirectional          | Host-to-host vMotion                      |
+| NTP                      | 123 / UDP                | Outbound               | Time synchronization                      |
+| iSCSI (Software Adapter) | 3260 / TCP               | Outbound               | iSCSI SAN access                          |
+| vCenter Server           | 443 / TCP                | Inbound                | vSphere Client, API, etc.                 |
+| DNS                      | 53 / TCP & UDP           | Outbound               | Name resolution                           |
+| DHCP                     | 67, 68 / UDP             | Bidirectional          | IP assignment (if used)                   |
+| vSphere Replication      | 31031, 44046 / TCP       | Bidirectional          | Replication traffic                       |
+| CIM Services             | 5989 / TCP               | Inbound                | Hardware health monitoring                |
+| Syslog                   | 514 / UDP                | Outbound               | Remote logging                            |
+
+> 🔐 **Tip**: Only enable necessary services to follow least privilege best practices.
+
+---
+
+## ✅ Enabling/Disabling Services (ESXi UI)
+
+1. Log in to **ESXi Host Client** (`https://<host-IP>`)
+2. Navigate to **Host > Manage > Services**
+3. Start, stop, or restart services as needed
+4. To open firewall ports:
+   - Go to **Manage > Firewall**
+   - Enable required **incoming** and **outgoing** rule sets
+
+---
+
+## 🔍 CLI Configuration Examples
+
+To enable NTP and open port 123:
+
+```bash
+esxcli network firewall ruleset set -e true -r ntpClient
