@@ -1,0 +1,63 @@
+# 🌐 VMware Infrastructure 3.0.1 - DNS and Routing Configuration
+
+This document outlines the DNS and routing configuration for VMware ESX 3.0.1 hosts as displayed in the VI Client.
+
+---
+
+## 🧭 Network Configuration Overview
+
+| **Parameter**        | **Value**                    |
+|----------------------|------------------------------|
+| **Hostname**         | `esxhost01.ashp.local`       |
+| **Domain**           | `ashp.local`                 |
+| **Primary DNS**      | `172.168.1.98`               |
+| **Secondary DNS**    | `172.168.1.97`               |
+| **Search Domains**   | `ashp.org`                   |
+| **Default Gateway**  | `172.168.1.1`                |
+| **VMkernel Gateway** | `10.30.1.1`                  |
+
+> ✅ These settings ensure the ESX host can resolve internal DNS names and route VMkernel traffic properly.
+
+---
+
+## 📦 Functional Importance
+
+- **Hostname & Domain**: Used to uniquely identify the host and support reverse DNS resolution.
+- **DNS Servers**: Required for resolving hostnames within the ASHP network.
+- **Search Domains**: Automatically appends the domain to unqualified hostnames.
+- **Default Gateway**: Enables outbound traffic from service console and VMkernel interfaces.
+- **VMkernel Gateway**: Specifically routes storage and vMotion traffic originating from the VMkernel.
+
+---
+
+## 🔄 Configuration Steps (via VI Client)
+
+1. Navigate to **Host > Configuration > DNS and Routing**
+2. Click **Properties**
+3. Set:
+   - Hostname
+   - Domain Name
+   - Primary & Secondary DNS
+   - Default Gateway for both Service Console and VMkernel
+4. Click **OK** and **Reboot if required**
+
+> 🚨 If DNS is misconfigured, ESX features like VMotion, iSCSI, and name resolution for NTP/logging may fail.
+
+---
+
+## 📁 Backup Recommendation
+
+- Document current settings in DR documentation
+- Export host profile (if using Host Profiles in later versions)
+- Include network screenshots in offline DR binders or OneNote
+
+---
+
+## 🧪 Troubleshooting Commands (Service Console)
+
+```bash
+cat /etc/resolv.conf
+cat /etc/sysconfig/network
+cat /etc/vmware/esx.conf | grep gateway
+ping esxhost01
+nslookup vc01.ashp.local
