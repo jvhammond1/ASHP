@@ -1,0 +1,78 @@
+# 🧾 VMware Infrastructure 3.0.1 License Configuration - ASHP
+
+This document captures the VMware Infrastructure 3.0.1 (ESX Server 3 and VirtualCenter 2) license configuration as seen under the **Configuration > Licensed Features** tab from the VMware VI Client.
+
+---
+
+## 🖥️ Environment Summary
+
+| **Component**             | **Value**                         |
+|---------------------------|-----------------------------------|
+| **VMware Version**        | ESX Server 3.0.1                  |
+| **VirtualCenter Version** | VMware VirtualCenter 2.0.1        |
+| **License Type**          | Centralized License Server        |
+| **License File Type**     | `.lic` file (plain text)          |
+| **License Server**        | `vmlic01.ashp.local` *(assumed)*  |
+| **Client Used**           | VMware VI Client (v1.x / 2.x)     |
+
+---
+
+## 🔐 Licensed Features Overview
+
+Based on the screenshot, the following features are licensed:
+
+| **Feature**                   | **Status**     |
+|-------------------------------|----------------|
+| Virtual SMP (Multiple vCPUs)  | ✔ Enabled      |
+| VMotion                       | ✔ Enabled      |
+| DRS (Distributed Resource Scheduler) | ✔ Enabled |
+| HA (High Availability)        | ✔ Enabled      |
+| ESX Server CPU Count          | 2 CPUs per host licensed |
+| VC Agent                      | ✔ Enabled      |
+| VC Management                 | ✔ Enabled      |
+
+> ✅ **Note**: Features are governed by license keys provided in a central `.lic` file parsed by the **VMware License Server** service.
+
+---
+
+## 📁 License File & Server Info
+
+- **License Server Path** (Typical):  
+  `C:\Program Files\VMware\VMware License Server\Licenses\`
+  
+- **License File Example**:  
+  `ashp_vmware.lic`
+
+- **License Server Management Tool**:  
+  VMware License Server Console (runs as Windows service)
+
+- **Backup Location**:  
+  `\\fileserver\backups\vmware\licenses\`
+
+---
+
+## 🔄 Backup & Disaster Recovery Notes
+
+- Back up `.lic` file and the full configuration of the **License Server**.
+- The license file is tied to the **hostname** and **MAC address** of the license server machine.
+- Avoid renaming the license server or changing its IP/MAC without preparing a rehost file from VMware.
+
+---
+
+## 🛠️ Reinstallation Steps (if needed)
+
+1. Reinstall **VMware License Server** on a Windows VM
+2. Place `.lic` file into the `Licenses\` directory
+3. Start the **VMware License Server** service
+4. Repoint ESX Hosts and VirtualCenter to the License Server:
+   - From VI Client > Configuration > Licensed Features
+   - Use FQDN or IP of license server
+5. Confirm features are recognized
+
+---
+
+## 📚 References
+
+- [VMware VI 3 License FAQ](https://kb.vmware.com/s/article/1001353)
+- [How to Configure VMware Central License Server](https://kb.vmware.com/s/article/1002849)
+- [VMware License File Syntax & Format](https://kb.vmware.com/s/article/1002847)
